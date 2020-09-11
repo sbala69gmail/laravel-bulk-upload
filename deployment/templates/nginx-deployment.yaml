@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.nginx.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    tier: backend
+    app: {{ .Values.nginx.name }}
+spec:
+  replicas: {{ .Values.nginx.replicasCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.nginx.name }}
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.nginx.name }}
+        tier: backend
+    spec:
+      volumes:
+      - name: {{ .Values.backendHostPath.name }}
+        hostPath:
+          path: {{ .Values.backendHostPath.path }}
+      - name: {{ .Values.nginx.config.mountName }}
+        configMap:
+          name: {{ .Values.nginx.config.name }}
+          items:
+          - key: config
+            path: site.conf
+      containers:
+      - name: {{ .Values.nginx.name }}
+        image: {{ .Values.nginx.image }}
+        volumeMounts:
+        - name: {{ .Values.backendHostPath.name }}
+          mountPath: /var/www
+        - name: {{ .Values.nginx.config.mountName }}
+          mountPath: /etc/nginx/conf.d
+        ports:
+        - containerPort: {{ .Values.nginx.port }}
+          name: http
+          protocol: TCP

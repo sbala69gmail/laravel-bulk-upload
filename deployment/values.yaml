@@ -1,0 +1,36 @@
+namespace:
+  name: bulk-upload
+  host: bulkupload.com
+php:
+  config:
+    name: php-config
+    mountName: php-config
+  name: php-deployment
+  image: sbala69/php-laravel-oracle:v2
+  replicasCount: 1
+  service:
+    name: phpservice
+    port: 9000
+mysql:
+  name: mysql-deployment
+  image: mysql:5.7.22
+  replicasCount: 1
+  type: LoadBalancer
+  secretName: mysql-secret
+  service:
+    name: mysqlservice
+    port: 3306
+nginx:
+  config:
+    name: nginx-config
+    mountName: nginx-config
+  service:
+    name: nginx-service
+    port: 1212
+  image: nginx
+  port: 80
+  name: nginx
+  replicasCount: 1
+backendHostPath:
+  path: "/d/test/bulkupload"
+  name: backend-soruce-code

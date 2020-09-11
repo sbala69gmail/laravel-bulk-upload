@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.php.service.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    tier: backend
+    app: {{ .Values.php.service.name }}
+spec:
+  selector:
+    app: {{ .Values.php.name }}
+    tier: backend
+  ports:
+    - protocol: TCP
+      port: {{ .Values.php.service.port }}

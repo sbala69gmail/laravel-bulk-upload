@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.php.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    tier: backend
+spec:
+  replicas: {{ .Values.php.replicasCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.php.name }}
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.php.name }}
+        tier: backend
+    spec:
+      volumes:
+      - name: {{ .Values.backendHostPath.name }}
+        hostPath:
+          path: {{ .Values.backendHostPath.path }}
+      containers:
+      - name: {{ .Values.php.name }}
+        image: {{ .Values.php.image }}
+        volumeMounts:
+        - name: {{ .Values.backendHostPath.name }}
+          mountPath: /var/www
+
+

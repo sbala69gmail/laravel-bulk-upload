@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.mysql.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    tier: backend
+spec:
+  replicas: {{ .Values.mysql.replicasCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.mysql.name }}
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.mysql.name }}
+        tier: backend
+    spec:
+      containers:
+      - name: {{ .Values.mysql.name }}
+        image: mysql
+        env:
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: mysql-username
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: mysql-password
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: database-name
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: root-password
